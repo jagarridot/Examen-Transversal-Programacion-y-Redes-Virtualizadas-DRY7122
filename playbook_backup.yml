@@ -1,0 +1,22 @@
+---
+- name: Respaldar configuración del router
+  hosts: csr1000v
+  gather_facts: no
+  tasks:
+    - name: Obtener running-config
+      ios_command:
+        commands:
+          - show running-config
+      register: resultado
+
+    - name: Guardar respaldo en archivo local
+      copy:
+        content: "{{ resultado.stdout[0] }}"
+        dest: "./backup_running_config_{{ ansible_date_time.iso8601 | default('') }}.txt"
+      delegate_to: localhost
+
+    - name: Guardar respaldo (nombre simple, alternativa segura)
+      local_action:
+        module: copy
+        content: "{{ resultado.stdout[0] }}"
+        dest: "./backup_running_config.txt"

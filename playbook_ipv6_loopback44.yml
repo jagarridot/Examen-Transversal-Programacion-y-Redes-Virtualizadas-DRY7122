@@ -1,0 +1,11 @@
+---
+- name: Configurar IPv6 en Loopback 44
+  hosts: csr1000v
+  gather_facts: no
+  tasks:
+    - name: Crear interfaz Loopback44 con direccionamiento IPv6
+      ios_config:
+        lines:
+          - ipv6 address 3001:ABCD:ABCD:4::4/128
+          - ipv6 address FE80::1 link-local
+        parents: interface Loopback44
